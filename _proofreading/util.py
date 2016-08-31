@@ -1,3 +1,4 @@
+import csv
 import matplotlib.pyplot as plt
 import numpy as np
 import _tifffile as tif
@@ -103,11 +104,11 @@ class Util(object):
   #   for Connectomics, IEEE Vis
   #
   @staticmethod
-  def load_user_info():
+  def load_users():
     '''
     '''
     user_info_url = "https://cdn.rawgit.com/haehn/proofreading/master/data/dojo_user_study.csv?raw=true"
-    tmpfile = urllib.urlretrieve(current_url)[0]
+    tmpfile = urllib.urlretrieve(user_info_url)[0]
 
     users = []
 
