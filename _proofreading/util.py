@@ -126,6 +126,23 @@ class Util(object):
 
     return users
 
+  @staticmethod
+  def load_user_results(id):
+    '''
+    '''
+    base_url = "https://cdn.rawgit.com/haehn/proofreading/master/data/participants/{0}/{1}.tif?raw=true"
+
+    data = []
+
+    for z in range(10):
+      current_url = base_url.format(id, z)
+      tmpfile = urllib.urlretrieve(current_url)[0]
+      data.append(tif.imread(tmpfile))
+
+    data = np.stack(data, axis=0)
+
+    return data
+
   #
   # measures
   #
