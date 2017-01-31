@@ -133,7 +133,7 @@ class Util(object):
   def load_users():
     '''
     '''
-    user_info_url = "https://cdn.rawgit.com/haehn/proofreading/master/data/dojo_user_study.csv?raw=true"
+    user_info_url = "https://raw.githubusercontent.com/haehn/proofreading/31751cfbebbd01cfd8a5691b2731cae1c8dd3869/data/dojo_user_study.csv"
     tmpfile = urllib.urlretrieve(user_info_url)[0]
 
     users = []
@@ -151,6 +151,33 @@ class Util(object):
         users.append(user)
 
     return users
+
+  @staticmethod
+  def evaluate_users(users, golds):
+    '''
+    '''
+    print 'Loading..'
+
+    for i,u in enumerate(users):
+        data = Util.load_user_results(u['id'])
+        
+        # grab measures
+        vi = Util.variation_of_information(golds, data)
+        ri = Util.rand_index(golds, data)
+        ed = Util.edit_distance(golds, data)
+        ed = ed[0] + ed[2] # we use number of 2d splits + 3d merges as described in the paper
+        adapted_rand_error = Util.adapted_rand_error(golds, data)
+        adapted_vi_error = Util.adapted_vi_error(golds, data)
+        
+        u['vi'] = vi
+        u['ri'] = ri
+        u['ed'] = ed
+        u['rand_error'] = adapted_rand_error
+        u['vi_error'] = adapted_vi_error
+        
+        time.sleep(1)
+        sys.stdout.write("\r%d%%" % (((i+1)/float(len(users)))*100))
+        sys.stdout.flush()
 
   @staticmethod
   def load_user_results(id):
@@ -462,3 +489,93 @@ class Util(object):
       else:
           return are
 
+  #
+  # statistics
+  #
+  @staticmethod
+  def group_users_by_tool(users):
+
+    tools = []
+    for u in users:
+      tools.append(u['tool'])
+    tools = sorted(list(set(tools)))
+
+    vi_tools = {}
+    ri_tools = {}
+    ed_tools = {}
+    rand_error_tools = {}
+    vi_error_tools = {} 
+
+    for t in tools:
+      vi_tools[t] = []
+      ri_tools[t] = []
+      ed_tools[t] = []
+      rand_error_tools[t] = []
+      vi_error_tools[t] = []
+
+    for u in users:
+        
+        vi_tools[u['tool']].append(u['vi'])
+        ri_tools[u['tool']].append(u['ri'])
+        ed_tools[u['tool']].append(u['ed'])
+        rand_error_tools[u['tool']].append(u['rand_error'])
+        vi_error_tools[u['tool']].append(u['vi_error'])    
+
+    measures = {}
+    measures['vi'] = vi_tools
+    measures['ri'] = ri_tools
+    measures['ed'] = ed_tools
+    measures['rand_error'] = rand_error_tools
+    measures['vi_error'] = vi_error_tools
+
+    return measures
+
+  @staticmethod
+  def plot_metric(title, baseline, measured_data):
+
+    data = {}
+    data[title] = {'Baseline': baseline}
+
+    for d in measured_data:
+      data[title][d] = measured_data[d]
+
+    # create the plot
+    Util.create_tool_plot(data)
+
+
+  #
+  # visualization
+  #
+  @staticmethod
+  def create_tool_plot(input_data, outputfile=''):
+    '''
+    Plots a measure across tools with a baseline.
+
+    Input data:
+      data = {}
+      data['TITLE'] = {'Baseline':BASELINE, 'Dojo':TOOL1, 'Mojo':TOOL2, 'Raveler':TOOL3..}
+    '''
+    title = input_data.keys()[0]
+    baseline = -1
+    data = []
+    data_labels =[]
+
+    for k in input_data[title].keys():
+
+      if k == 'Baseline':
+        baseline = input_data[title][k]
+      else:
+        data_labels.append(k)
+        data.append(input_data[title][k])
+
+    # pair data and labels
+    data_pairs = zip(data_labels, data)
+    # .. and sort
+    data_pairs = sorted(data_pairs, key= lambda t: t[0])
+
+    fig, ax = plt.subplots(figsize=(10,10))
+    ax.plot(range(3*len(data_pairs)), [baseline]*3*len(data_pairs), 'k:', color='gray')
+    b = plt.boxplot([d[1] for d in data_pairs])
+    # print range(len(data_pairs)), [d[0] for d in data_pairs]
+    b = plt.xticks(range(1,len(data_pairs)+1), [d[0] for d in data_pairs])
+    b = plt.ylabel(title, labelpad=20)
