@@ -65,7 +65,7 @@ p.Util.view(image, gold, segmentation)
 ```
 
 
-![png](doc/output_3_0.png)
+![png](output_3_0.png)
 
 
 
@@ -85,43 +85,43 @@ p.Util.view(images, golds, segmentations)
 ```
 
 
-![png](doc/output_5_0.png)
+![png](output_5_0.png)
 
 
 
-![png](doc/output_5_1.png)
+![png](output_5_1.png)
 
 
 
-![png](doc/output_5_2.png)
+![png](output_5_2.png)
 
 
 
-![png](doc/output_5_3.png)
+![png](output_5_3.png)
 
 
 
-![png](doc/output_5_4.png)
+![png](output_5_4.png)
 
 
 
-![png](doc/output_5_5.png)
+![png](output_5_5.png)
 
 
 
-![png](doc/output_5_6.png)
+![png](output_5_6.png)
 
 
 
-![png](doc/output_5_7.png)
+![png](output_5_7.png)
 
 
 
-![png](doc/output_5_8.png)
+![png](output_5_8.png)
 
 
 
-![png](doc/output_5_9.png)
+![png](output_5_9.png)
 
 
 # Measures
@@ -517,7 +517,7 @@ p.Util.plot_metric('Variation of Information', p.Util.variation_of_information(g
 ```
 
 
-![png](doc/output_15_0.png)
+![png](output_15_0.png)
 
 
 
@@ -529,7 +529,7 @@ p.Util.plot_metric('Rand Index', p.Util.rand_index(golds, segmentations), measur
 ```
 
 
-![png](doc/output_16_0.png)
+![png](output_16_0.png)
 
 
 
@@ -543,7 +543,7 @@ p.Util.plot_metric('Edit Distance', ed_baseline, measures['ed'])
 ```
 
 
-![png](doc/output_17_0.png)
+![png](output_17_0.png)
 
 
 
@@ -555,7 +555,7 @@ p.Util.plot_metric('Adapted Rand Error', p.Util.adapted_rand_error(golds, segmen
 ```
 
 
-![png](doc/output_18_0.png)
+![png](output_18_0.png)
 
 
 
